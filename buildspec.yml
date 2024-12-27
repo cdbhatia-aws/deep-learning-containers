@@ -2,7 +2,8 @@ version: 0.2
 
 env:
   variables:
-    INTERNAL_REPO: "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/NeuronDLCBuilder"
+    INTERNAL_REPO: "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/NeuronDLCDockerfiles"
+    PACKAGE_NAME = "NeuronDLCDockerfiles"
 
 phases:
   install:
@@ -17,7 +18,8 @@ phases:
       - git config --global credential.UseHttpPath true
   build:
     commands:
-      - git clone $INTERNAL_REPO internal-repo || echo "Clone failed"
-      - cd internal-repo || echo "cd failed"
-      - ls -R || echo "ls failed"
-      - find . -type f -exec cat {} + || echo "cat failed"
+      - git clone $INTERNAL_REPO $PACKAGE_NAME || echo "Clone failed"
+      - cd $PACKAGE_NAME || echo "cd failed"
+      - ls -la || echo "ls failed"
+      - echo "Contents of $PACKAGE_NAME directory:"
+      - find . -maxdepth 1 -type f -exec echo {} \; -exec cat {} \; || echo "cat failed"
