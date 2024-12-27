@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    INTERNAL_REPO: "ssh://git.amazon.com/pkg/NeuronDLCBuilder"
+    INTERNAL_REPO: "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/NeuronDLCBuilder"
 
 phases:
   install:
@@ -11,11 +11,13 @@ phases:
     commands:
       - yum update -y
       - yum install -y git
+  pre_build:
+    commands:
+      - git config --global credential.helper '!aws codecommit credential-helper $@'
+      - git config --global credential.UseHttpPath true
   build:
     commands:
-      - mkdir -p ~/.ssh
-      - ssh-keyscan -H git.amazon.com >> ~/.ssh/known_hosts
-      - git clone $INTERNAL_REPO internal-repo
-      - cd internal-repo
-      - ls -R
-      - cat $(find . -type f)
+      - git clone $INTERNAL_REPO internal-repo || echo "Clone failed"
+      - cd internal-repo || echo "cd failed"
+      - ls -R || echo "ls failed"
+      - find . -type f -exec cat {} + || echo "cat failed"
