@@ -1,0 +1,25 @@
+version: 0.2
+
+env:
+  variables:
+    INTERNAL_REPO: "ssh://git.amazon.com/pkg/NeuronDLCBuilder"
+    GITHUB_REPO: "https://github.com/cdbhatia-aws/deep-learning-containers"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - apt-get update
+      - apt-get install -y git
+  pre_build:
+    commands:
+      - git config --global credential.helper '!aws codecommit credential-helper $@'
+      - git config --global credential.UseHttpPath true
+  build:
+    commands:
+      - git clone $INTERNAL_REPO internal-repo
+      - cd internal-repo
+      - git remote add github $GITHUB_REPO
+      - git push github --all
+      - git push github --tags
