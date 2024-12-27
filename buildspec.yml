@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     INTERNAL_REPO: "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/NeuronDLCDockerfiles"
-    PACKAGE_NAME = "NeuronDLCDockerfiles"
+    PACKAGE_NAME: "NeuronDLCDockerfiles"
 
 phases:
   install:
