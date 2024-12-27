@@ -3,7 +3,6 @@ version: 0.2
 env:
   variables:
     INTERNAL_REPO: "ssh://git.amazon.com/pkg/NeuronDLCBuilder"
-    GITHUB_REPO: "https://github.com/cdbhatia-aws/deep-learning-containers"
 
 phases:
   install:
@@ -12,16 +11,11 @@ phases:
     commands:
       - yum update -y
       - yum install -y git
-  pre_build:
-    commands:
-      - mkdir -p ~/.ssh
-      - aws ssm get-parameter --name /path/to/ssh-key --with-decryption --query Parameter.Value --output text > ~/.ssh/id_rsa
-      - chmod 600 ~/.ssh/id_rsa
-      - ssh-keyscan -H git.amazon.com >> ~/.ssh/known_hosts
   build:
     commands:
+      - mkdir -p ~/.ssh
+      - ssh-keyscan -H git.amazon.com >> ~/.ssh/known_hosts
       - git clone $INTERNAL_REPO internal-repo
       - cd internal-repo
-      - git remote add github $GITHUB_REPO
-      - git push github --all
-      - git push github --tags
+      - ls -R
+      - cat $(find . -type f)
