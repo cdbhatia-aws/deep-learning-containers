@@ -10,12 +10,14 @@ phases:
     runtime-versions:
       nodejs: 14
     commands:
-      - apt-get update
-      - apt-get install -y git
+      - yum update -y
+      - yum install -y git
   pre_build:
     commands:
-      - git config --global credential.helper '!aws codecommit credential-helper $@'
-      - git config --global credential.UseHttpPath true
+      - mkdir -p ~/.ssh
+      - aws ssm get-parameter --name /path/to/ssh-key --with-decryption --query Parameter.Value --output text > ~/.ssh/id_rsa
+      - chmod 600 ~/.ssh/id_rsa
+      - ssh-keyscan -H git.amazon.com >> ~/.ssh/known_hosts
   build:
     commands:
       - git clone $INTERNAL_REPO internal-repo
